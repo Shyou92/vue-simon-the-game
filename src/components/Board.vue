@@ -5,6 +5,9 @@
         v-for="item in soundsArray"
         :key="item.id"
         :class="['board__list-item', 'board__list-item_' + item.color]"
+        :item="item"
+        :isActive="item.isActive"
+        :changeState="changeState"
         :sound="item.sound"
         :gameIsStarted="gameIsStarted"
       />
@@ -17,7 +20,7 @@ import BoardItem from './BoardItem.vue';
 
 export default {
   name: 'Board',
-  props: ['soundsArray', 'gameIsStarted'],
+  props: ['soundsArray', 'gameIsStarted', 'changeState'],
   components: {
     BoardItem,
   },

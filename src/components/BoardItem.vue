@@ -1,25 +1,25 @@
 <template>
-  <li :class="{ active: isActive }" @click="click" :sound="sound"></li>
+  <li
+    :class="{ active: item.isActive }"
+    @click="click"
+    :sound="item.sound"
+  ></li>
 </template>
 
 <script>
 export default {
   name: 'BoardItem',
-  props: ['sound', 'gameIsStarted'],
+  props: ['gameIsStarted', 'item', 'changeState'],
   data() {
     return {
-      isActive: false,
+      currentState: this.changeState,
     };
   },
   methods: {
-    changeState() {
-      this.isActive = !this.isActive;
-      setTimeout(() => (this.isActive = !this.isActive), 200);
-    },
     click() {
-      if (this.gameIsStarted === true) {
-        this.sound.play();
-        this.changeState();
+      if (this.gameIsStarted) {
+        this.item.sound.play();
+        this.currentState(this.item);
       }
     },
   },

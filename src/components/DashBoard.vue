@@ -27,17 +27,7 @@
 <script>
 export default {
   name: 'DashBoard',
-  data() {
-    return {
-      round: 1,
-    };
-  },
-  props: ['gameIsStarted', 'startGame'],
-  // methods: {
-  //   startGame() {
-  //     console.log(this.gameIsStarted);
-  //   },
-  // },
+  props: ['gameIsStarted', 'startGame', 'round'],
 };
 </script>
 
