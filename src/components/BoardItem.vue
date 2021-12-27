@@ -9,17 +9,26 @@
 <script>
 export default {
   name: 'BoardItem',
-  props: ['gameIsStarted', 'item', 'changeState'],
+  props: [
+    'gameIsStarted',
+    'item',
+    'changeItemState',
+    'userSequence',
+    'checkSequence',
+  ],
   data() {
     return {
-      currentState: this.changeState,
+      changeCurrentState: this.changeItemState,
+      mutatedSequence: this.userSequence,
     };
   },
   methods: {
     click() {
       if (this.gameIsStarted) {
         this.item.sound.play();
-        this.currentState(this.item);
+        this.changeCurrentState(this.item);
+        this.mutatedSequence.push(this.item);
+        this.checkSequence();
       }
     },
   },

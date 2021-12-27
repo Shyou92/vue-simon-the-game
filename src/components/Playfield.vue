@@ -1,16 +1,21 @@
 <template>
   <div class="playfield">
     <h2 class="playfield__header">Simon Says</h2>
-    <div class="container">
+    <GameIsOver :round="round" :restart="restart" v-if="isGameOver" />
+    <div v-else class="container">
       <Board
         :soundsArray="soundsArray"
-        :changeState="changeState"
+        :changeItemState="changeItemState"
         :gameIsStarted="gameIsStarted"
+        :userSequence="userSequence"
+        :checkSequence="checkSequence"
       />
       <DashBoard
         :gameIsStarted="gameIsStarted"
         :startGame="startGame"
         :round="round"
+        :timePaused="timePaused"
+        :onTimeChange="onTimeChange"
       />
     </div>
   </div>
@@ -19,6 +24,7 @@
 <script>
 import Board from './Board.vue';
 import DashBoard from './DashBoard.vue';
+import GameIsOver from './GameIsOver.vue';
 
 const sound1 = new Audio(require('../assets/sounds/1.mp3'));
 const sound2 = new Audio(require('../assets/sounds/2.mp3'));
@@ -30,6 +36,7 @@ export default {
   components: {
     Board,
     DashBoard,
+    GameIsOver,
   },
   data() {
     return {
@@ -45,17 +52,23 @@ export default {
       sequence: [],
       userSequence: [],
       gameIsStarted: false,
+      isItemSame: null,
+      isGameOver: false,
+      timePaused: 1500,
     };
   },
   methods: {
+    onTimeChange(data) {
+      this.timePaused = data;
+    },
     startGame() {
-      this.gameIsStarted = true;
       this.levelUp();
+      this.gameIsStarted = true;
     },
     randomNumber(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     },
-    changeState(item) {
+    changeItemState(item) {
       item.isActive = !item.isActive;
       setTimeout(() => (item.isActive = !item.isActive), 200);
     },
@@ -66,16 +79,42 @@ export default {
     play() {
       this.sequence.forEach((item, index) => {
         setTimeout(() => {
-          item.sound.play(), this.changeState(item);
-        }, 1500 * index);
+          item.sound.play(), this.changeItemState(item);
+        }, this.timePaused * index);
       });
     },
     levelUp() {
-      this.toggleRoundState();
       this.round++;
       this.sequence.push(this.soundsArray[this.randomNumber(0, 3)]);
       this.play();
-      this.toggleRoundState();
+      this.userSequence.length = 0;
+    },
+    checkSequence() {
+      this.isItemSame = this.userSequence.every((el, index) => {
+        return el === this.sequence[index];
+      });
+
+      if (this.isItemSame === false) {
+        this.isGameOver = true;
+      }
+      this.newRound();
+      return this.isItemSame;
+    },
+    newRound() {
+      if (
+        this.userSequence.length === this.sequence.length &&
+        this.isItemSame
+      ) {
+        return setTimeout(() => this.levelUp(), this.timePaused);
+      }
+    },
+    restart() {
+      this.round = 0;
+      this.gameIsStarted = false;
+      this.sequence = [];
+      this.userSequence = [];
+      this.isItemSame = null;
+      this.isGameOver = false;
     },
   },
 };

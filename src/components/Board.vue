@@ -6,10 +6,10 @@
         :key="item.id"
         :class="['board__list-item', 'board__list-item_' + item.color]"
         :item="item"
-        :isActive="item.isActive"
-        :changeState="changeState"
-        :sound="item.sound"
+        :changeItemState="changeItemState"
         :gameIsStarted="gameIsStarted"
+        :userSequence="userSequence"
+        :checkSequence="checkSequence"
       />
     </ul>
   </div>
@@ -20,7 +20,13 @@ import BoardItem from './BoardItem.vue';
 
 export default {
   name: 'Board',
-  props: ['soundsArray', 'gameIsStarted', 'changeState'],
+  props: [
+    'soundsArray',
+    'gameIsStarted',
+    'changeItemState',
+    'userSequence',
+    'checkSequence',
+  ],
   components: {
     BoardItem,
   },
